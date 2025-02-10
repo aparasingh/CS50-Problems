@@ -5,10 +5,12 @@
 #include <string.h>
 
 string substitute(string key);
+bool is_alpha(string key);
+bool no_repeat(string key);
 
 int main(int argc, string argv[])
 {
-    if (argv[1] == NULL || argc != 2)
+    if (argc != 2)
     {
         printf("Usage: ./substitution key\n");
         return 1;
@@ -16,10 +18,17 @@ int main(int argc, string argv[])
     int len = strlen(argv[1]);
     if (len == 26)
     {
-        // add check for alphabetical chars
-        string cipher = substitute(argv[1]);
-        printf("ciphertext: %s\n", cipher);
-        return 0;
+        if (is_alpha(argv[1]) && no_repeat(argv[1]))
+        {
+            string cipher = substitute(argv[1]);
+            printf("ciphertext: %s\n", cipher);
+            return 0;
+        }
+        else
+        {
+            printf("Usage: ./substitution key\n");
+            return 1;
+        }
     }
     else
         printf("Key must contain 26 characters.\n");
@@ -28,43 +37,60 @@ int main(int argc, string argv[])
 
 string substitute(string key)
 {
-    bool isKeyUpper = isupper(key[0]);
     string input = get_string("plaintext: ");
     int len = strlen(input);
+    int diff;
     for (int i = 0; i < len; i++)
     {
-        if(isalpha(input[i]))
+        if (isalpha(input[i]))
         {
-            if (isKeyUpper)
+            if (isupper(input[i]))
             {
-                if (isupper(input[i]))
-                    {
-                        int diff = input[i] - 'A';
-                        input[i] = key[diff];
-                    }
+                diff = input[i] - 'A';
+                if (isupper(key[diff]))
+                    input[i] = key[diff];
                 else
-                    {
-                        int diff = input[i] - 'a';
-                        char upper = key[diff];
-                        input[i] = upper + 32;
-                    }
+                    input[i] = key[diff] - 32;
             }
             else
             {
-                if (isupper(input[i]))
-                {
-                    int diff = input[i] - 'A';
-                    char lower = key[diff];
-                    input[i] = lower - 32;
-                }
+                diff = input[i] - 'a';
+                if (isupper(key[diff]))
+                    input[i] = key[diff] + 32;
                 else
-                {
-                    int diff = input[i] - 'a';
                     input[i] = key[diff];
-                }
             }
         }
-
     }
     return input;
+}
+
+bool is_alpha(string key)
+{
+    int i = 0;
+    while (i < 26)
+    {
+        if (isalpha(key[i]))
+        {
+            i++;
+        }
+        else
+            return false;
+    }
+    return true;
+}
+
+bool no_repeat(string key)
+{
+    for (int i = 0; i < 26; i++)
+    {
+        for (int k = i + 1; k < 26; k++)
+        {
+            if (tolower(key[i]) == tolower(key[k]))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
