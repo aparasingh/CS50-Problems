@@ -2,10 +2,10 @@
 #include <stdio.h>
 
 // Need to create two walls
-const int walls = 2;
+const int max_walls = 2;
 
 void print_wall(int num_bricks);
-void print_spaces(int leading_spaces);
+void print_spaces(int spaces);
 int main(void)
 {
     // Get wall height
@@ -20,7 +20,7 @@ int main(void)
     {
         int leading_spaces = height - i;
         // For Rows
-        for (int wall_counter = 0; wall_counter < walls; wall_counter++)
+        for (int wall_counter = 0; wall_counter < max_walls; wall_counter++)
         {
             // While loop to create two walls and difference to get the spacing
             if (wall_counter == 0)
@@ -32,7 +32,7 @@ int main(void)
             else
             {
                 // right wall
-                print_spaces(walls);
+                print_spaces(max_walls);
                 print_wall(i);
             }
         }
@@ -48,9 +48,9 @@ void print_wall(int num_bricks)
     }
 }
 
-void print_spaces(int leading_spaces)
+void print_spaces(int spaces)
 {
-    for (int j = 0; j < leading_spaces; j++)
+    for (int j = 0; j < spaces; j++)
     {
         printf(" ");
     }
