@@ -1,6 +1,9 @@
 #include <cs50.h>
 #include <stdio.h>
 
+// Need to create two walls
+const int walls = 2;
+
 void print_wall(int num_bricks);
 void print_spaces(int leading_spaces);
 int main(void)
@@ -12,25 +15,24 @@ int main(void)
         height = get_int("Height: ");
     }
     while (height < 1 || height > 8);
-    // Need to create two walls
-    int walls = 2;
+
     for (int i = 1; i <= height; i++)
     {
+        int leading_spaces = height - i;
         // For Rows
         for (int wall_counter = 0; wall_counter < walls; wall_counter++)
         {
             // While loop to create two walls and difference to get the spacing
-            int leading_spaces = height - i;
             if (wall_counter == 0)
             {
                 // Left wall
                 print_spaces(leading_spaces);
                 print_wall(i);
-                printf("  ");
             }
             else
             {
                 // right wall
+                print_spaces(walls);
                 print_wall(i);
             }
         }
