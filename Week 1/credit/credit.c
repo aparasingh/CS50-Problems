@@ -2,13 +2,15 @@
 #include <math.h>
 #include <stdio.h>
 
+#define LAST_DIGITS 10
+
 int checkSum(long cardNum, int length);
 
 int main(void)
 {
     long cardNum = get_long("Number: ");
     int length = log10(cardNum) + 1;
-    int firstDigits = cardNum / (pow(10, length - 2));
+    int firstDigits = cardNum / (pow(LAST_DIGITS, length - 2));
     if (length == 15 && (firstDigits == 34 || firstDigits == 37))
     {
         printf("AMEX\n");
@@ -37,15 +39,15 @@ int checkSum(long cardNum, int length)
     int last;
     for (int i = 0; i < length; i++)
     {
-        last = cardNum % 10;
+        last = cardNum % LAST_DIGITS;
         cardNum = cardNum / 10;
         if (i % 2 != 0)
         {
             last = last * 2;
-            if (last >= 10)
+            if (last >= LAST_DIGITS)
             {
-                int lastDigit = last % 10;
-                int firstDigit = last / 10;
+                int lastDigit = last % LAST_DIGITS;
+                int firstDigit = last / LAST_DIGITS;
                 last = lastDigit + firstDigit;
             }
             sum += last;
@@ -53,5 +55,5 @@ int checkSum(long cardNum, int length)
         else
             sum += last;
     }
-    return sum % 10 == 0;
+    return sum % LAST_DIGITS == 0;
 }
