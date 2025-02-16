@@ -87,77 +87,40 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
             copy[i][j] = image[i][j];
         }
     }
+    // Iterate over height and width to get values from copy of image
     for (int i = 0; i < height; i++)
     {
+        // Initialize the row above and below current row
         int aboveRow = i - 1;
         int belowRow = i + 1;
         for (int j = 0; j < width; j++)
         {
+            // Initialize the column left and right of current column
             int leftCol = j - 1;
             int rightCol = j + 1;
-            double sumRed = copy[i][j].rgbtRed;
-            double sumGreen = copy[i][j].rgbtGreen;
-            double sumBlue = copy[i][j].rgbtBlue;
-            int count = 1;
-            // Above Row
-            if (aboveRow >= 0)
+            // Initialize sum of RGB values and counter for pixels that are added up
+            double sumRed = 0;
+            double sumGreen = 0;
+            double sumBlue = 0;
+            int count = 0;
+            // Iterate over the 3 rows and 3 columns to get sum of RGB and number of pixels added
+            for (int x = aboveRow; x <= belowRow; x++)
             {
-                sumRed += copy[aboveRow][j].rgbtRed;
-                sumBlue += copy[aboveRow][j].rgbtBlue;
-                sumGreen += copy[aboveRow][j].rgbtGreen;
-                count++;
-                if (leftCol >= 0)
+                if (x >= 0 && x < height)
                 {
-                    sumRed += copy[aboveRow][leftCol].rgbtRed;
-                    sumBlue += copy[aboveRow][leftCol].rgbtBlue;
-                    sumGreen += copy[aboveRow][leftCol].rgbtGreen;
-                    count++;
-                }
-                if (rightCol < width)
-                {
-                    sumRed += copy[aboveRow][rightCol].rgbtRed;
-                    sumBlue += copy[aboveRow][rightCol].rgbtBlue;
-                    sumGreen += copy[aboveRow][rightCol].rgbtGreen;
-                    count++;
+                    for (int y = leftCol; y <= rightCol; y++)
+                    {
+                        if (y >= 0 && y < width)
+                        {
+                            sumRed += copy[x][y].rgbtRed;
+                            sumGreen += copy[x][y].rgbtGreen;
+                            sumBlue += copy[x][y].rgbtBlue;
+                            count++;
+                        }
+                    }
                 }
             }
-            // Current Row
-            if (leftCol >= 0)
-            {
-                sumRed += copy[i][leftCol].rgbtRed;
-                sumBlue += copy[i][leftCol].rgbtBlue;
-                sumGreen += copy[i][leftCol].rgbtGreen;
-                count++;
-            }
-            if (rightCol < width)
-            {
-                sumRed += copy[i][rightCol].rgbtRed;
-                sumBlue += copy[i][rightCol].rgbtBlue;
-                sumGreen += copy[i][rightCol].rgbtGreen;
-                count++;
-            }
-            // Below Row
-            if (belowRow < height)
-            {
-                sumRed += copy[belowRow][j].rgbtRed;
-                sumBlue += copy[belowRow][j].rgbtBlue;
-                sumGreen += copy[belowRow][j].rgbtGreen;
-                count++;
-                if (leftCol >= 0)
-                {
-                    sumRed += copy[belowRow][leftCol].rgbtRed;
-                    sumBlue += copy[belowRow][leftCol].rgbtBlue;
-                    sumGreen += copy[belowRow][leftCol].rgbtGreen;
-                    count++;
-                }
-                if (rightCol < width)
-                {
-                    sumRed += copy[belowRow][rightCol].rgbtRed;
-                    sumBlue += copy[belowRow][rightCol].rgbtBlue;
-                    sumGreen += copy[belowRow][rightCol].rgbtGreen;
-                    count++;
-                }
-            }
+            // Calculate average of RGB values and assign to image
             image[i][j].rgbtRed = round(sumRed / (float) count);
             image[i][j].rgbtBlue = round(sumBlue / (float) count);
             image[i][j].rgbtGreen = round(sumGreen / (float) count);
