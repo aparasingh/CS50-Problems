@@ -3,8 +3,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <strings.h>
 
 #include "dictionary.h"
@@ -16,8 +16,8 @@ typedef struct node
     struct node *next;
 } node;
 
-// Choose number of buckets in hash table: Prime number nearest to 26*26
-const unsigned int N = 677;
+// Choose number of buckets in hash table: Prime number nearest to 26*26*26
+const unsigned int N = 17573;
 
 // Hash table
 node *table[N];
@@ -39,7 +39,7 @@ bool check(const char *word)
     int index = hash(word);
     for (node *ptr = table[index]; ptr != NULL; ptr = ptr->next)
     {
-        if(strcasecmp(word,ptr->word) == 0)
+        if (strcasecmp(word, ptr->word) == 0)
         {
             return true;
         }
@@ -72,26 +72,36 @@ bool load(const char *dictionary)
         printf("Could not open %s.\n", dictionary);
         return false;
     }
-    char *word = NULL;
+    char *word = malloc(LENGTH * sizeof(char));
     int index = 0;
     while (fscanf(file, "%s", word) != EOF)
     {
         node *n = malloc(sizeof(node));
-        if(n == NULL)
+        if (n == NULL)
         {
             printf("Could not allocate enough memory");
             return false;
         }
         strcpy(n->word, word);
+        n->next = NULL;
         index = hash(word);
-        node *ptr = table[index]->next;
-        table[index]->next = n;
-        if (ptr != NULL)
+        if (table[index] == NULL)
         {
-            n->next = ptr;
+            table[index] = n;
+        }
+        else
+        {
+            node *ptr = table[index]->next;
+            table[index]->next = n;
+            if (ptr != NULL)
+            {
+                n->next = ptr;
+            }
         }
         dict_size++;
     }
+    fclose(file);
+    free(word);
     return true;
 }
 
@@ -105,6 +115,16 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    // TODO
-    return false;
+    for (int i = 0; i < N; i++)
+    {
+        node *ptr = table[i];
+        while (ptr != NULL)
+        {
+            node *next = ptr->next;
+            free(ptr);
+            ptr = next;
+        }
+        table[i] = NULL;
+    }
+    return true;
 }
