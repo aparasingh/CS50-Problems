@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <strings.h>
 
 #include "dictionary.h"
 
@@ -21,10 +22,28 @@ const unsigned int N = 677;
 // Hash table
 node *table[N];
 
+int dict_size = 0;
+
+// Initialize hash table
+void init_hashtable()
+{
+    for (int i = 0; i < N; i++)
+    {
+        table[i] = NULL;
+    }
+}
+
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
-    // TODO
+    int index = hash(word);
+    for (node *ptr = table[index]; ptr != NULL; ptr = ptr->next)
+    {
+        if(strcasecmp(word,table[index]->word) == 0)
+        {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -36,15 +55,17 @@ unsigned int hash(const char *word)
     int sum = 0;
     for (int i = 0; i < len; i++)
     {
-        sum += word[i];
+        if (isalpha(word[i]))
+        {
+            sum += toupper(word[i]);
+        }
     }
-
     return sum % N;
 }
-
 // Loads dictionary into memory, returning true if successful, else false
 bool load(const char *dictionary)
 {
+    init_hashtable();
     FILE *file = fopen(dictionary, "r");
     if (file == NULL)
     {
@@ -68,8 +89,8 @@ bool load(const char *dictionary)
         if (ptr != NULL)
         {
             n->next = ptr;
-
         }
+        dict_size++;
     }
     return true;
 }
@@ -77,8 +98,8 @@ bool load(const char *dictionary)
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
 unsigned int size(void)
 {
-    // TODO
-    return 0;
+    // Return size of hash table
+    return dict_size;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
