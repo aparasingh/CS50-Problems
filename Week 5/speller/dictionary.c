@@ -15,8 +15,8 @@ typedef struct node
     struct node *next;
 } node;
 
-// Choose number of buckets in hash table
-const unsigned int N = 26;
+// Choose number of buckets in hash table: Prime number nearest to 26*26
+const unsigned int N = 677;
 
 // Hash table
 node *table[N];
@@ -31,8 +31,15 @@ bool check(const char *word)
 // Hashes word to a number
 unsigned int hash(const char *word)
 {
-    // Improve this hash function
-    return toupper(word[0]) - 'A';
+    // Check sum of characters in word
+    int len = strlen(word);
+    int sum = 0;
+    for (int i = 0; i < len; i++)
+    {
+        sum += word[i];
+    }
+
+    return sum % N;
 }
 
 // Loads dictionary into memory, returning true if successful, else false
