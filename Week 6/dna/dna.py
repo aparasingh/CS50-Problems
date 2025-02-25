@@ -6,7 +6,8 @@ def main():
 
     # Check for command-line usage
     if len(sys.argv) != 3:
-        exit(1)
+        print("Wrong input")
+        sys.exit(1)
     else:
         # Read database file into a variable
         database = []
@@ -15,12 +16,23 @@ def main():
             for row in reader:
                 database.append(row)
 
-        # Read DNA sequence file into a variable
-        dna = open(sys.argv[2], "r")
-        print(dna.read())
-        dna.close()
+        file = open(sys.argv[1], "r")
+        header = file.readline().split("\n")[0].split(",")
+        header.pop(0)
+        file.close()
+        print(header)
 
-    # Find longest match of each STR in DNA sequence
+        # Read DNA sequence file into a variable
+        file = open(sys.argv[2], "r")
+        dna = file.read()
+        file.close()
+        print(dna)
+
+        # Find longest match of each STR in DNA sequence
+        #counter = []
+        #for x in header:
+            #counter.append(longest_match(dna,x))
+        #print(counter)
 
     # TODO: Check database for matching profiles
 
