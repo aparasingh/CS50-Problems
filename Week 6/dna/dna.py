@@ -20,21 +20,31 @@ def main():
         header = file.readline().split("\n")[0].split(",")
         header.pop(0)
         file.close()
-        print(header)
 
         # Read DNA sequence file into a variable
         file = open(sys.argv[2], "r")
         dna = file.read()
         file.close()
-        print(dna)
 
         # Find longest match of each STR in DNA sequence
-        #counter = []
-        #for x in header:
-            #counter.append(longest_match(dna,x))
-        #print(counter)
+        counter = {}
+        index_match = 0
+        for x in header:
+            counter[x] = str(longest_match(dna, x))
 
-    # TODO: Check database for matching profiles
+        # Check database for matching profiles
+        for row in database:
+            for i in header:
+                if counter[i] == row[i]:
+                    index_match = index_match + 1
+            if index_match == len(header):
+                print(row["name"])
+                exit(0)
+            else:
+                index_match = 0
+
+        print("No match")
+        exit(1)
 
     return
 
