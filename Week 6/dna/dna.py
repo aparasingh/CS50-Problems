@@ -10,15 +10,15 @@ def main():
         sys.exit(1)
     else:
         # Read database file into a variable
-        database = []
+        str_database = []
         with open(sys.argv[1]) as file:
             reader = csv.DictReader(file)
             for row in reader:
-                database.append(row)
+                str_database.append(row)
 
         file = open(sys.argv[1], "r")
-        header = file.readline().split("\n")[0].split(",")
-        header.pop(0)
+        strs = file.readline().split("\n")[0].split(",")
+        strs.pop(0)
         file.close()
 
         # Read DNA sequence file into a variable
@@ -27,17 +27,18 @@ def main():
         file.close()
 
         # Find longest match of each STR in DNA sequence
-        counter = {}
+        str_counter = {}
         index_match = 0
-        for x in header:
-            counter[x] = str(longest_match(dna, x))
+        str_len = len(strs)
+        for x in strs:
+            str_counter[x] = str(longest_match(dna, x))
 
         # Check database for matching profiles
-        for row in database:
-            for i in header:
-                if counter[i] == row[i]:
+        for row in str_database:
+            for i in strs:
+                if str_counter[i] == row[i]:
                     index_match = index_match + 1
-            if index_match == len(header):
+            if index_match == str_len:
                 print(row["name"])
                 exit(0)
             else:
